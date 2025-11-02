@@ -35,10 +35,12 @@ El rendimiento detallado por clase es el siguiente:
 
 ### Análisis de Métricas Visuales
 
-**(Aquí es donde puedes arrastrar y soltar tus imágenes `image_18c7a6.png` y `image_1920dd.png` en el editor de GitHub)**
+<img width="777" height="699" alt="CM" src="https://github.com/user-attachments/assets/8b0be78e-ea18-4863-98a6-5ab3851469ed" />
 
 **Matriz de Confusión:**
 La matriz confirma que el modelo es **excepcionalmente bueno para identificar la clase 'Normal'** (Recall de 0.96). El principal desafío es la confusión entre los dos tipos de neumonía, donde 137 casos de 'Viral' fueron clasificados erróneamente como 'Bacterial', un sesgo consistente con el desbalance de clases del dataset original.
+
+<img width="1004" height="699" alt="ROC" src="https://github.com/user-attachments/assets/5c5307c7-21d6-43a2-b4b1-1faee5201631" />
 
 **Curvas ROC / AUC:**
 El modelo muestra una fuerte capacidad de discriminación. El **AUC para 'Normal' es casi perfecto (0.98)**. 'Bacterial' (0.88) y 'Viral' (0.81) también muestran un buen rendimiento, confirmando que 'Viral' es la clase más difícil de distinguir para el modelo.
@@ -51,30 +53,33 @@ Para replicar y probar la API en un entorno local:
 ### 1. Instalación
 Clona el repositorio y crea un entorno virtual. Luego, instala las dependencias:
 
-Bash
+```Bash
 git clone [https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia.git](https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia.git)
 cd UDD_Proyecto_M7_Neumonia
 pip install -r requirements.txt
-
+```
 Nota para macOS (Apple Silicon): Este proyecto se desarrolló con tensorflow-macos==2.16.2 y tensorflow-metal==1.2.0. Es posible que requirements.txt necesite un ajuste manual para estas librerías.
 
 2. Ejecutar el Servidor
 En un terminal, inicia el servidor Flask:
 
-Bash
-
+```Bash
 python app.py
+```
 El servidor se iniciará y cargará los 4 modelos en memoria. Estará listo en http://127.0.0.1:5001.
+
 
 3. Probar la API
 Abre un segundo terminal y ejecuta el script cliente test_api.py. (Asegúrate de que la variable PATH_A_IMAGEN_DE_PRUEBA dentro del script apunte a una imagen real).
 
-Bash
-
+```Bash
 python test_api.py
+```
 Respuesta esperada:
 
+```JSON
 {
   "confianza": "87.13%",
   "prediccion": "Normal"
 }
+```

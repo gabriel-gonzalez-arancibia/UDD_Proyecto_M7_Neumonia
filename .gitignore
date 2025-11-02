@@ -1,0 +1,24 @@
+# --- Datos (Carpetas train/test/val) ---
+# ¡NUNCA SUBIR EL DATASET! Es demasiado grande.
+train/
+test/
+val/
+
+# --- Modelos (Los manejaremos con Git LFS) ---
+*.keras
+
+# --- Caché de KerasTuner ---
+keras_tuner_dir/
+
+# --- Caché y entornos de Python ---
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# --- Caché de Notebooks ---
+.ipynb_checkpoints/
+
+# --- Archivos del Sistema Operativo ---
+.DS_Store

@@ -46,38 +46,67 @@ La matriz confirma que el modelo es **excepcionalmente bueno para identificar la
 El modelo muestra una fuerte capacidad de discriminación. El **AUC para 'Normal' es casi perfecto (0.98)**. 'Bacterial' (0.88) y 'Viral' (0.81) también muestran un buen rendimiento, confirmando que 'Viral' es la clase más difícil de distinguir para el modelo.
 
 ---
-## 🚀 Cómo Usar la API (Localmente)
 
-Para replicar y probar la API en un entorno local:
+## 🚀 Cómo Probar la API Pública (Despliegue)
 
-### 1. Instalación
-Clona el repositorio y crea un entorno virtual. Luego, instala las dependencias:
+Para cumplir con los requisitos del proyecto, la API se ha desplegado públicamente utilizando **Ngrok**.
+
+**URL Pública de la API:**
+`https://postparalytic-unhushable-christen.ngrok-free.dev/predict`
+
+> **IMPORTANTE (Nota para el Revisor):** Esta URL es un "túnel" a mi servidor local (`app.py`) y **solo estará activa mientras mi computador esté encendido y ejecutando los procesos**. Si el enlace no funciona, es posible que el túnel haya expirado. Por favor, contácteme para volver a activarlo.
+
+### Prueba de la API Pública
+
+Se puede probar la API enviando una solicitud POST con una imagen.
+
+1.  **Asegúrate de que la URL esté activa.**
+2.  Ejecuta el script `test_api.py` (asegúrate de que la variable `API_URL` esté configurada con el enlace de Ngrok).
+
+    ```bash
+    python test_api.py
+    ```
+**Respuesta esperada:**
+```json
+{
+  "confianza": "87.13%",
+  "prediccion": "Normal"
+}
+```
+---
+
+## 🛠️ Cómo Replicar la Configuración Local
+Si se desea ejecutar el servidor localmente:
+
+1. Instalación
+Clona el repositorio e instala las dependencias:
 
 ```Bash
+
 git clone [https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia.git](https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia.git)
 cd UDD_Proyecto_M7_Neumonia
 pip install -r requirements.txt
 ```
-Nota para macOS (Apple Silicon): Este proyecto se desarrolló con tensorflow-macos==2.16.2 y tensorflow-metal==1.2.0. Es posible que requirements.txt necesite un ajuste manual para estas librerías.
 
-2. Ejecutar el Servidor
+Nota para macOS (Apple Silicon): Este proyecto se desarrolló con tensorflow-macos==2.16.2 y tensorflow-metal==1.2.0.
+
+2. Ejecutar el Servidor Local
 En un terminal, inicia el servidor Flask:
 
 ```Bash
 python app.py
 ```
-El servidor se iniciará y cargará los 4 modelos en memoria. Estará listo en http://127.0.0.1:5001.
+El servidor se iniciará en http://127.0.0.1:5002.
 
-
-3. Probar la API
-Abre un segundo terminal y ejecuta el script cliente test_api.py. (Asegúrate de que la variable PATH_A_IMAGEN_DE_PRUEBA dentro del script apunte a una imagen real).
+3. Probar la API Abre un segundo terminal y ejecuta el script cliente test_api.py. (Asegúrate de que la variable PATH_A_IMAGEN_DE_PRUEBA dentro del script apunte a una imagen real).
 
 ```Bash
 python test_api.py
 ```
+
 Respuesta esperada:
 
-```JSON
+```json
 {
   "confianza": "87.13%",
   "prediccion": "Normal"

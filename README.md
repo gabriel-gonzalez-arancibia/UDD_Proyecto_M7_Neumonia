@@ -55,19 +55,18 @@ El modelo muestra una fuerte capacidad de discriminación. El **AUC para 'Normal
 
 ## 🚀 Cómo Probar la API Pública (Despliegue)
 
-Para cumplir con los requisitos del proyecto, la API se ha desplegado públicamente utilizando **Ngrok**.
+La API final se ha desplegado en **Hugging Face Spaces**, que proporciona la RAM gratuita necesaria (16GB) para ejecutar el ensamble completo de 4 modelos.
 
-**URL Pública de la API:**
-`https://postparalytic-unhushable-christen.ngrok-free.dev/predict`
-
-> **IMPORTANTE (Nota para el Revisor):** Esta URL es un "túnel" a mi servidor local (`app.py`) y **solo estará activa mientras mi computador esté encendido y ejecutando los procesos**. Si el enlace no funciona, es posible que el túnel haya expirado. Por favor, contácteme para volver a activarlo.
+**URL Pública y Permanente de la API:**
+`https://gabrielgonzalez-proyecto-neumonia-api.hf.space/predict`
 
 ### Prueba de la API Pública
 
 Se puede probar la API enviando una solicitud POST con una imagen.
 
-1.  **Asegúrate de que la URL esté activa.**
-2.  Ejecuta el script `test_api.py` (asegúrate de que la variable `API_URL` esté configurada con el enlace de Ngrok).
+1.  Clona el repositorio.
+2.  Instala las dependencias: `pip install -r requirements.txt`.
+3.  Ejecuta el script `test_api.py`. (La URL ya está configurada para apuntar a la API de Hugging Face).
 
     ```bash
     python test_api.py
@@ -75,13 +74,11 @@ Se puede probar la API enviando una solicitud POST con una imagen.
 **Respuesta esperada:**
 ```json
 {
-  "confianza": "87.13%",
+  "confianza": "64.48%",
   "prediccion": "Normal"
 }
-```
----
 
-## 🛠️ Cómo Replicar la Configuración Local
+🛠️ Cómo Replicar la Configuración Local
 Si se desea ejecutar el servidor localmente:
 
 1. Instalación
@@ -99,10 +96,12 @@ Nota para macOS (Apple Silicon): Este proyecto se desarrolló con tensorflow-mac
 2. Ejecutar el Servidor Local
 En un terminal, inicia el servidor Flask:
 
+
 ```Bash
+
 python app.py
 ```
-El servidor se iniciará en http://127.0.0.1:5002.
+El servidor se iniciará en http://127.0.0.1:7860.
 
 3. Probar la API Abre un segundo terminal y ejecuta el script cliente test_api.py. (Asegúrate de que la variable PATH_A_IMAGEN_DE_PRUEBA dentro del script apunte a una imagen real).
 

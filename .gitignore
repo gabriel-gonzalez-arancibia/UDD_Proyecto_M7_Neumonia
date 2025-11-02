@@ -5,7 +5,7 @@ test/
 val/
 
 # --- Modelos (Los manejaremos con Git LFS) ---
-*.keras
+
 
 # --- Caché de KerasTuner ---
 keras_tuner_dir/

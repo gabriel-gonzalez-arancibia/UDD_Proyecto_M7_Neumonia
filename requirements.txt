@@ -4,3 +4,4 @@ Pillow
 requests
 gunicorn
 numpy==1.26.4
+gdown

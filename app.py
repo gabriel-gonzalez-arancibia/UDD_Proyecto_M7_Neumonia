@@ -106,4 +106,5 @@ def predict_endpoint():
 # 6. EJECUTAR EL SERVIDOR 
 # ==============================================================================
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002)
+    # El puerto estándar para Demos de ML es 7860
+    app.run(host='0.0.0.0', port=7860)

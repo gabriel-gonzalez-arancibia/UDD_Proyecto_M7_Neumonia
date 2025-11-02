@@ -14,43 +14,49 @@ import warnings
 app = Flask(__name__)
 
 # ==============================================================================
-# 2. CARGAR EL MODELO ORIGINAL (Versión Ligera para Render)
+# 2. CARGAR EL ENSAMBLE COMPLETO (4 Modelos)
 # ==============================================================================
-MODEL_DIR = "modelo_descargado_original"
+# Usamos el directorio /tmp/ que sí tiene permisos de escritura
+MODEL_DIR = "/tmp/modelos_descargados_ensamble" 
 os.makedirs(MODEL_DIR, exist_ok=True)
 
-MODEL_URL = 'https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia/releases/download/CNN/modelo_original.keras'
-MODEL_PATH = os.path.join(MODEL_DIR, 'modelo_original.keras')
+MODEL_URLS = [
+    'https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia/releases/download/CNN/modelo_original.keras',
+    'https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia/releases/download/CNN/tuner_mejor_modelo_1.keras',
+    'https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia/releases/download/CNN/tuner_mejor_modelo_2.keras',
+    'https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia/releases/download/CNN/tuner_mejor_modelo_3.keras'
+]
+model_paths = [os.path.join(MODEL_DIR, os.path.basename(url)) for url in MODEL_URLS]
 
-def descargar_modelo():
-    print("Verificando modelo...")
-    if not os.path.exists(MODEL_PATH):
-        print(f"Descargando modelo original desde {MODEL_URL}...")
-        try:
-            r = requests.get(MODEL_URL, allow_redirects=True)
-            with open(MODEL_PATH, 'wb') as f:
-                f.write(r.content)
-            print(f"Modelo guardado en {MODEL_PATH}")
-        except Exception as e:
-            print(f"Error al descargar {MODEL_URL}: {e}")
-    else:
-        print(f"Modelo {MODEL_PATH} ya existe.")
+def descargar_modelos():
+    print("Verificando modelos...")
+    for url, path in zip(MODEL_URLS, model_paths):
+        if not os.path.exists(path):
+            print(f"Descargando modelo desde {url}...")
+            try:
+                r = requests.get(url, allow_redirects=True)
+                with open(path, 'wb') as f:
+                    f.write(r.content)
+                print(f"Modelo guardado en {path}")
+            except Exception as e:
+                print(f"Error al descargar {url}: {e}")
+        else:
+            print(f"Modelo {path} ya existe.")
 
-# --- Carga de Modelo ---
-descargar_modelo()
-print("Cargando modelo original en memoria...")
-# Suprimimos warnings de Keras al cargar
+# --- Carga de Modelos ---
+descargar_modelos()
+print("Cargando el ensamble completo (4 modelos) en memoria...")
 warnings.filterwarnings('ignore', category=UserWarning)
-model = load_model(MODEL_PATH)
+ensemble_members = [load_model(path) for path in model_paths]
 warnings.filterwarnings('default', category=UserWarning)
-print("✅ Modelo único cargado exitosamente.")
+print(f"✅ {len(ensemble_members)} modelos del ensamble cargados exitosamente.")
 
 # Definimos las etiquetas de las clases
 CLASS_LABELS = ['Bacterial', 'Normal', 'Viral']
 IMG_SIZE = (128, 128)
 
 # ==============================================================================
-# 3. FUNCIÓN DE PREPROCESAMIENTO 
+# 3. FUNCIÓN DE PREPROCESAMIENTO
 # ==============================================================================
 def preprocess_image(img_bytes):
     img = Image.open(io.BytesIO(img_bytes))
@@ -63,19 +69,25 @@ def preprocess_image(img_bytes):
     return img_batch
 
 # ==============================================================================
-# 4. FUNCIÓN DE PREDICCIÓN 
+# 4. FUNCIÓN DE PREDICCIÓN (Ensamble)
 # ==============================================================================
-def predecir(img_batch):
-    preds = model.predict(img_batch, verbose=0)
+def predecir_con_ensamble(img_batch):
+    all_predictions = []
+    for model in ensemble_members:
+        preds = model.predict(img_batch, verbose=0)
+        all_predictions.append(preds)
+        
+    # Promediar las predicciones
+    ensemble_predictions_avg = np.mean(all_predictions, axis=0)
     
-    final_class_index = np.argmax(preds, axis=1)[0]
-    confidence = np.max(preds, axis=1)[0]
+    final_class_index = np.argmax(ensemble_predictions_avg, axis=1)[0]
+    confidence = np.max(ensemble_predictions_avg, axis=1)[0]
     predicted_label = CLASS_LABELS[final_class_index]
     
     return predicted_label, float(confidence)
 
 # ==============================================================================
-# 5. DEFINIR EL ENDPOINT DE LA API 
+# 5. DEFINIR EL ENDPOINT DE LA API
 # ==============================================================================
 @app.route('/predict', methods=['POST'])
 def predict_endpoint():
@@ -91,8 +103,8 @@ def predict_endpoint():
         img_bytes = file.read()
         processed_image = preprocess_image(img_bytes)
         
-        # Llamamos a la nueva función de predicción simple
-        label, confidence = predecir(processed_image)
+        # Llamamos a la función de ensamble
+        label, confidence = predecir_con_ensamble(processed_image)
         
         return jsonify({
             'prediccion': label,
@@ -103,8 +115,7 @@ def predict_endpoint():
         return jsonify({'error': f'Error durante el procesamiento: {str(e)}'}), 500
 
 # ==============================================================================
-# 6. EJECUTAR EL SERVIDOR 
+# 6. EJECUTAR EL SERVIDOR (Puerto 7860 para HF)
 # ==============================================================================
 if __name__ == '__main__':
-    # El puerto estándar para Demos de ML es 7860
     app.run(host='0.0.0.0', port=7860)

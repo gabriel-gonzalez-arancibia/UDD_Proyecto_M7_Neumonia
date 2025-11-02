@@ -77,8 +77,9 @@ Se puede probar la API enviando una solicitud POST con una imagen.
   "confianza": "64.48%",
   "prediccion": "Normal"
 }
+```
 
-🛠️ Cómo Replicar la Configuración Local
+### 🛠️ Cómo Replicar la Configuración Local
 Si se desea ejecutar el servidor localmente:
 
 1. Instalación

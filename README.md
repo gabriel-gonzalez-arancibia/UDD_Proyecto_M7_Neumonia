@@ -1,3 +1,9 @@
+---
+title: Proyecto Deteccion de Neumonia
+sdk: docker
+app_port: 7860
+---
+
 # Proyecto Final: Detección de Neumonía con CNN (Módulo 7)
 
 Este proyecto corresponde a la entrega final del Módulo 7 del Bootcamp de Ciencia de Datos e Inteligencia Artificial UDD. El objetivo es desarrollar un modelo de *Deep Learning* capaz de clasificar imágenes de radiografías de tórax en tres categorías: **Normal**, **Neumonía Bacterial** y **Neumonía Viral**.

@@ -1,5 +1,4 @@
 # --- Datos (Carpetas train/test/val) ---
-# ¡NUNCA SUBIR EL DATASET! Es demasiado grande.
 train/
 test/
 val/
@@ -22,3 +21,6 @@ venv/
 
 # --- Archivos del Sistema Operativo ---
 .DS_Store
+
+# --- Ignorar la carpeta de modelos descargados por la API ---
+modelos_descargados/

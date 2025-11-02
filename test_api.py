@@ -8,7 +8,7 @@ import os
 PATH_A_IMAGEN_DE_PRUEBA = '/Users/gabrielgonzalez/Documents/Ciencia de Datos/M7 Técnicas Avanzadas/test/NORMAL/IM-0001-0001.jpeg'
 
 # 2. La URL API local
-API_URL = 'http://127.0.0.1:5001/predict'
+API_URL = 'https://postparalytic-unhushable-christen.ngrok-free.dev/predict'
 # ---------------------------------------------------------------
 
 # Verificamos que la imagen exista

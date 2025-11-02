@@ -3,12 +3,51 @@
 # =============================================================================
 
 import os
+import gdown
+import requests
 import numpy as np
 from flask                              import Flask, request, jsonify
 from tensorflow.keras.models            import load_model
 from tensorflow.keras.preprocessing     import image
 from PIL                                import Image
 import io
+
+# --- Rutas ---
+MODEL_DIR = "modelos_descargados"
+os.makedirs(MODEL_DIR, exist_ok=True)
+
+# ¡¡REEMPLAZA ESTAS URLS CON LAS TUYAS DE GITHUB RELEASES!!
+MODEL_URLS = [
+    'https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia/releases/download/CNN/modelo_original.keras',
+    'https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia/releases/download/CNN/tuner_mejor_modelo_1.keras',
+    'https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia/releases/download/CNN/tuner_mejor_modelo_2.keras',
+    'https://github.com/gabriel-gonzalez-arancibia/UDD_Proyecto_M7_Neumonia/releases/download/CNN/tuner_mejor_modelo_3.keras'
+]
+
+model_paths = [os.path.join(MODEL_DIR, os.path.basename(url)) for url in MODEL_URLS]
+
+# --- Función de Descarga ---
+def descargar_modelos():
+    print("Verificando modelos...")
+    for url, path in zip(MODEL_URLS, model_paths):
+        if not os.path.exists(path):
+            print(f"Descargando modelo desde {url}...")
+            try:
+                # Usar requests para descargar el archivo LFS de GitHub
+                r = requests.get(url, allow_redirects=True)
+                with open(path, 'wb') as f:
+                    f.write(r.content)
+                print(f"Modelo guardado en {path}")
+            except Exception as e:
+                print(f"Error al descargar {url}: {e}")
+        else:
+            print(f"Modelo {path} ya existe.")
+
+# --- Carga de Modelos ---
+descargar_modelos() # Llama a la función al iniciar la app
+print("Cargando modelos del ensamble...")
+ensemble_members = [load_model(path) for path in model_paths]
+print(f"✅ {len(ensemble_members)} modelos del ensamble cargados en memoria.")
 
 # ==============================================================================
 # 1. INICIALIZAR LA APLICACIÓN FLASK
@@ -137,4 +176,4 @@ def predict_endpoint():
 # ==============================================================================
 if __name__ == '__main__':
     # host='0.0.0.0' permite que el servidor sea accesible desde tu red local
-    app.run(host='0.0.0.0', port=5001)
+    app.run(host='0.0.0.0', port=5002)
